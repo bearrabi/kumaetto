@@ -13,11 +13,9 @@ class UsersTableSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'user_id'   => 1,
                 'name'      => 'kuma',
                 'password'  => Hash::make('kumasanno')
             ],[
-                'user_id'   => 2,
                 'name'      => 'usagi',
                 'password'  => Hash::make('usagisanno')
             ]
