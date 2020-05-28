@@ -1,0 +1,25 @@
+/*タイトル部*/
+#title{ 
+  color: black;
+  margin: 20vh auto 20px auto;
+}
+
+/*スライドアニメーション部*/
+#carouselControls-anime{
+  margin: 0 auto;
+  background-color: rgba(128,128,128,0.5);
+  width: 60%; height: 300px;
+  border-radius: 10px;
+}
+.slide_item{ width: initial; height:250px; background-color: red; border-radius: 10px 10px 0 0;}
+#item1{ background-color: red;}
+#item2{ background-color: green;}
+#item3{ background-color: blue;}
+
+/*ログインボタン、新規登録ボタン*/
+.home_buttons a{ 
+  display: block; 
+  margin: 20px auto;
+  height: 50px;
+  line-height: 40px;
+}
