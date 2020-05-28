@@ -38,6 +38,12 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    /*以降、デフォルトからの変更箇所*/ 
+
     //ログインする歳にname項目を利用する
     public function username(){ return 'name'; }
+
+    //ログアウト処理
+    use Illuminate\Http\Request;
+    public function loggedOut(Request $request){    return redirect('/');   }
 }
