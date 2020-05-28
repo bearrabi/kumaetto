@@ -51,5 +51,16 @@
 
       </div>
     </div>
+
+    <!--ログインボタン、登録ボタン-->
+    <div class="row justify-content-md-center">
+      <div id="login_btn" class="home_buttons col-lg-3 col-md-3 col-sm-3"> 
+        <a class="btn btn-success" href="{{ route('login') }}">ログイン</a>
+      </div>
+
+      <div id="register_btn" class="home_buttons col-lg-3 col-md-3 col-sm-3"> 
+        <a class="btn btn-primary" href="{{ route('register') }}">新規登録</a>
+      </div>
+    </div>
 </body>
 </html>
