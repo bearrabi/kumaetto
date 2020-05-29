@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -43,7 +44,9 @@ class LoginController extends Controller
     //ログインする歳にname項目を利用する
     public function username(){ return 'name'; }
 
+    //ログイン後の以降先
+    public function redirectPath(){ return '/mypage'; }
+    
     //ログアウト処理
-    use Illuminate\Http\Request;
     public function loggedOut(Request $request){    return redirect('/');   }
 }
