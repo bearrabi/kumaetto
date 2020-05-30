@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -37,4 +38,15 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    /*以降、デフォルトからの変更箇所*/ 
+
+    //ログインする歳にname項目を利用する
+    public function username(){ return 'name'; }
+
+    //ログイン後の以降先
+    public function redirectPath(){ return '/mypage'; }
+    
+    //ログアウト処理
+    public function loggedOut(Request $request){    return redirect('/');   }
 }
