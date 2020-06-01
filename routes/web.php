@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {   return view('home');      });
 Route::get('/mypage', function(){ return view('mypage');  });
 
+Route::resource('weight', 'WeightController');
+
 Auth::routes();
 
 
