@@ -56,7 +56,7 @@ class WeightController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('weight.edit');
     }
 
     /**
