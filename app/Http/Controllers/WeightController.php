@@ -13,7 +13,7 @@ class WeightController extends Controller
      */
     public function index()
     {
-        return view('weight.index');
+        return view('mypage');
     }
 
     /**
