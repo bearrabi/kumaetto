@@ -23,7 +23,7 @@ class WeightController extends Controller
      */
     public function create()
     {
-        //
+        return view('weight.create');
     }
 
     /**
