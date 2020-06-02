@@ -4,6 +4,10 @@
 @section('content')
 
 <!--入力フォーム-->
-@component('weight.components.input_form')  @endcomponent
+@component('weight.components.input_form',[ 'years' => $years, 
+                                            'months' => $months, 
+                                            'days' => $days]
+                                            )  
+@endcomponent
 
 @endsection
