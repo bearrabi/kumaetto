@@ -8,19 +8,8 @@
               <form method="POST" action="{{ route('weight.store') }}">
                   @csrf
 
-                  <div class="form-group row">
-                      <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
-                      <div class="col-md-6">
-                          <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                          @error('name')
-                              <span class="invalid-feedback" role="alert">
-                                  <strong>{{ $message }}</strong>
-                              </span>
-                          @enderror
-                      </div>
-                  </div>
+                  <!--日付--->
+                  @component('weight.components.input_date_form',['years' => $years, 'months' => $months, 'days' => $days])   @endcomponent
 
                   
               </form>
@@ -28,4 +17,4 @@
         </div>
     </div>
   </div>
-</div>-->
+</div>
