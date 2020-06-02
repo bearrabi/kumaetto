@@ -23,7 +23,51 @@ class WeightController extends Controller
      */
     public function create()
     {
-        return view('weight.create');
+       //default input date(year)
+       $now_year = date('Y');
+       for ($i=0;$i<2;$i++){
+           $year = $now_year - 1 + $i;
+           if ($year == $now_year){    $years[$year] = true;}
+           else{ $years[$year] = false;  }
+       }
+
+       //default input date(month)
+       $now_month = date('m');
+       for ($i=1;$i<13;$i++){  
+           if ($i == $now_month){  $months[$i] = true; }
+           else{   $months[$i] = false;   }
+       }
+
+       //default input date(day)
+       $now_day = date('d');
+       for ($i=1;$i<32;$i++){  
+           if ($i == $now_day){    $days[$i] = true; }
+           else{   $days[$i] = false; }
+       }
+
+       //default input time(hour)
+       /*$now_hour = date('H');
+       for ($i=0;$i<25;$i++){
+           if ($i == $now_hour){  $hours[$i] = true;  }
+           else{   $hours[$i] = false; }
+       }
+
+       //default input time(minute)
+       $now_minute = date('i');
+       for ($i=0;$i<60;$i++){
+           if ($i == $now_minute){  $minutes[$i] = true;  }
+           else{   $minutes[$i] = false; }
+       }
+        
+       //default input time(second)
+       $now_second = date('s');
+       for ($i=0;$i<60;$i++){
+           if ($i == $now_second){  $seconds[$i] = true;  }
+           else{   $seconds[$i] = false; }
+       }*/
+       
+       //return view('weight.create', compact('years','months','days','hours','minutes','seconds'));
+       return view('weight.create', compact('years','months','days'));
     }
 
     /**
