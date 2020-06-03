@@ -6,7 +6,10 @@
 <!--入力フォーム-->
 @component('weight.components.input_form',[ 'years' => $years, 
                                             'months' => $months, 
-                                            'days' => $days]
+                                            'days' => $days,
+                                            'hours' => $hours,
+                                            'minutes' => $minutes,
+                                            'seconds' => $seconds]
                                             )  
 @endcomponent
 
