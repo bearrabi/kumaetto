@@ -9,19 +9,22 @@
                   @csrf
 
                   <!--日付--->
-                  @component('weight.components.input_date_form',['years' => $years, 
+                  @component('weight.components.input_date_form',['input_state' => $date_input_state,
+                                                                  'years' => $years, 
                                                                   'months' => $months, 
                                                                   'days' => $days])   
                   @endcomponent
 
                   <!--時刻-->
-                  @component('weight.components.input_time_form',['hours' => $hours, 
+                  @component('weight.components.input_time_form',['input_state' => $time_input_state,
+                                                                  'hours' => $hours, 
                                                                   'minutes' => $minutes, 
                                                                   'seconds' => $seconds])
                   @endcomponent
                   
                   <!--体重-->
-                  @component('weight.components.input_main_form',['contents_name' => 'weight', 
+                  @component('weight.components.input_main_form',['input_state' => $main_input_state,
+                                                                  'contents_name' => 'weight', 
                                                                   'label_name' => '体重', 
                                                                   'unit' => 'Kg'])
                   @endcomponent
