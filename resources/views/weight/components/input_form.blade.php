@@ -5,7 +5,7 @@
         <div class="card-header">{{ __('体重記録') }}</div>
 
           <div class="card-body">
-              <form method="POST" action="{{ route('weight.store') }}">
+              <form method="POST" action="{{ route($route) }}">
                   @csrf
 
                   <!--日付--->
@@ -20,6 +20,9 @@
                                                                   'seconds' => $seconds])
                   @endcomponent
                   
+                  
+                  <!--登録ボタン-->
+                  <input class="btn btn-info" type="submit" value="{{$button_value}}">
               </form>
           </div>
         </div>
