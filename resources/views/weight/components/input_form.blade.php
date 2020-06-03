@@ -20,6 +20,11 @@
                                                                   'seconds' => $seconds])
                   @endcomponent
                   
+                  <!--体重-->
+                  @component('weight.components.input_main_form',['contents_name' => 'weight', 
+                                                                  'label_name' => '体重', 
+                                                                  'unit' => 'Kg'])
+                  @endcomponent
                   
                   <!--登録ボタン-->
                   <input class="btn btn-info" type="submit" value="{{$button_value}}">
