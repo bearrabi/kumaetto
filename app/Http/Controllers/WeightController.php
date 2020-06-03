@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Weight;
 
 class WeightController extends Controller
 {
@@ -77,7 +78,26 @@ class WeightController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //viewから渡された日付時刻を取得
+        $measured_date = $request->year.'-'.$request->month.'-'.$request->day;
+        $measured_time = ' '.$request->hour.':'.$request->minute.':'.$request->second;
+        $date_time = $measured_date.$measured_time;
+        
+        //viewから渡された体重を取得
+        $weight_value = (double)($request->weight1.'.'.$request->weight2);
+
+        //認証を許可したユーザーのIDを取得
+        $id = auth()->user()->id;
+
+        //取得した値をデータベースに書き込み
+        $weight = new Weight;
+        $weight->user_id = $id;
+        $weight->weight = $weight_value;
+        $weight->measured_dt = $date_time;
+        $weight->save();
+
+        return redirect('mypage');
+
     }
 
     /**
