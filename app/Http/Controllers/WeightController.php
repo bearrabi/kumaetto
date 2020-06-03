@@ -46,7 +46,7 @@ class WeightController extends Controller
        }
 
        //default input time(hour)
-       /*$now_hour = date('H');
+       $now_hour = date('H');
        for ($i=0;$i<25;$i++){
            if ($i == $now_hour){  $hours[$i] = true;  }
            else{   $hours[$i] = false; }
@@ -64,10 +64,9 @@ class WeightController extends Controller
        for ($i=0;$i<60;$i++){
            if ($i == $now_second){  $seconds[$i] = true;  }
            else{   $seconds[$i] = false; }
-       }*/
+       }
        
-       //return view('weight.create', compact('years','months','days','hours','minutes','seconds'));
-       return view('weight.create', compact('years','months','days'));
+       return view('weight.create', compact('years','months','days','hours','minutes','seconds'));
     }
 
     /**
