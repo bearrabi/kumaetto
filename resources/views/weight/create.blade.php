@@ -4,7 +4,9 @@
 @section('content')
 
 <!--入力フォーム-->
-@component('weight.components.input_form',[ 'years' => $years, 
+@component('weight.components.input_form',[ 'route' => 'weight.store',
+                                            'button_value' => '保存',
+                                            'years' => $years, 
                                             'months' => $months, 
                                             'days' => $days,
                                             'hours' => $hours,
