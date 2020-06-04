@@ -136,7 +136,6 @@ class WeightController extends Controller
 
         $id = $weight->id;
         
-
         return view('weight.edit', compact( 'dates' ,'times', 'weights', 'id' ));
     }
 
@@ -149,7 +148,23 @@ class WeightController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //weight | measured_dtを更新するために取得
+        $weight_info = Weight::find($id);
+
+        //measured_dtカラムにセットする値を生成
+        $req_date = $request->year.'/'.$request->month.'/'.$request->day;
+        $req_time = ' '.$request->hour.':'.$request->minute.':'.$request->second;
+        $measured_dt = $req_date.$req_time;
+
+        //weightカラムにセットする値を生成
+        $weight = (double)($request->weight1.'.'.$request->weight2);
+
+        //weightカラムの値とmeasured_dtカラムの値を更新
+        $weight_info->measured_dt = $measured_dt;
+        $weight_info->weight = $weight;
+        $weight_info->save();
+
+        return redirect('mypage');
     }
 
     /**
