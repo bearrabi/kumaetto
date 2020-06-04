@@ -97,7 +97,6 @@ class WeightController extends Controller
         $weight->save();
 
         return redirect('mypage');
-
     }
 
     /**
