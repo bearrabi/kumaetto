@@ -119,7 +119,25 @@ class WeightController extends Controller
      */
     public function edit($id)
     {
-        return view('weight.edit');
+        $weight = Weight::find($id);
+        $measured_date = $weight->measured_dt;
+        $dates = [  'year' => date('Y', strtotime($measured_date)),
+                    'month' => date('m', strtotime($measured_date)),
+                    'day' => date('d', strtotime($measured_date))];
+
+        $times = [  'hour' => date('H', strtotime($measured_date)),
+                    'minute' => date('i', strtotime($measured_date)),
+                    'second' => date('s', strtotime($measured_date))];
+        
+        $weights = explode('.', $weight->weight);
+
+        ##小数点以下が0の時に、index1の要素が空になってしまうため、明示的に０を格納する
+        if (count($weights) == 1){   $weights[1] = '0'; }
+
+        $id = $weight->id;
+        
+
+        return view('weight.edit', compact( 'dates' ,'times', 'weights', 'id' ));
     }
 
     /**
