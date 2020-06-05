@@ -7,7 +7,7 @@
         <div class="col-md-8">
 
             <!--スライド部分-->
-            @component('layouts.components.slide' [ 'slide1_path'   =>  '',
+            @component('layouts.components.slide', [ 'slide1_path'   =>  '',
                                                     'slide1_param'  =>  '',
                                                     'slide2_path'   =>  '',
                                                     'slide2_param'  =>  '',
