@@ -26,13 +26,19 @@ class WeightController extends Controller
 
         //set data of table view
         $data_of_table_view = [ 
-                                'user_id'           =>  $user_id,
-                                'path'              =>  $path,
-                                'h3_value'          =>  $h3_value,
-                                'tr_values'         =>  $tr_values,
-                                'td_values'         =>  $td_values,
-                                ];
+                'user_id'           =>  $user_id,
+                'path'              =>  $path,
+                'h3_value'          =>  $h3_value,
+                'tr_values'         =>  $tr_values,
+                'td_values'         =>  $td_values
+        ];
         //dd($data_of_table_view);
+
+        
+
+
+
+
         return view('mypage',compact('data_of_table_view'));
     }
 
