@@ -2,6 +2,13 @@
   <label for="year">日付</label>
 </div>
 <div class="form-inline">
+
+@if ($input_state == 'readonly')
+    <input name="year" type="text" class="form-control txtbx" id="year" value="{{$year}}" readonly>年 &nbsp;&nbsp;
+    <input name="month" type="text" class="form-control txtbx" id="month" value="{{$month}}" readonly>分 &nbsp;&nbsp;
+    <input name="day" type="text" class="form-control txtbx" id="day"  value="{{$day}}" readonly>日 
+@elseif ($input_state == 'normal')
+
   <!--年-->
   <select name="year" id="year" class="form-control selectbx">
     @foreach($years as $key => $value)
@@ -34,4 +41,5 @@
         @endif
       @endforeach
   </select>日
+ @endif 
 </div>

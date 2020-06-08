@@ -6,9 +6,9 @@
 
   <!--時-->
   @if ($input_state == 'readonly')
-    <input name="hour" type="text" class="form-control txtbx" id="hour" value="{{$hours}}" readonly>時 &nbsp;&nbsp;
-    <input name="minute" type="text" class="form-control txtbx" id="minute" value="{{$minutes}}" readonly>分 &nbsp;&nbsp;
-    <input name="second" type="text" class="form-control txtbx" id="second"  value="{{$seconds}}" readonly>秒 
+    <input name="hour" type="text" class="form-control txtbx" id="hour" value="{{$hour}}" readonly>時 &nbsp;&nbsp;
+    <input name="minute" type="text" class="form-control txtbx" id="minute" value="{{$minute}}" readonly>分 &nbsp;&nbsp;
+    <input name="second" type="text" class="form-control txtbx" id="second"  value="{{$second}}" readonly>秒 
   @elseif ($input_state == 'normal')
     <select name="hour" id="hour" class="form-control selectbx">
       @foreach($hours as $key => $value)

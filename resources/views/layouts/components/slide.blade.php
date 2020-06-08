@@ -10,7 +10,8 @@
   <!--スライド部分-->
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <div class="slide_item" id="item1"></div>
+      <div class="slide_item" id="item1">
+      </div>
     </div>
     <div class="carousel-item">
       <div class="slide_item" id="item2"></div>        
