@@ -45,7 +45,7 @@ class LoginController extends Controller
     public function username(){ return 'name'; }
 
     //ログイン後の以降先
-    public function redirectPath(){ return '/mypage'; }
+    public function redirectPath(){ return '/weight'; }
     
     //ログアウト処理
     public function loggedOut(Request $request){    return redirect('/');   }
