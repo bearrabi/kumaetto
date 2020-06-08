@@ -119,7 +119,7 @@ class WeightController extends Controller
         $weight->measured_dt    =   $date_time;
         $weight->save();
 
-        return redirect('mypage');
+        return redirect('weight');
     }
 
     /**
@@ -190,7 +190,7 @@ class WeightController extends Controller
         $weight_info->weight        =   $weight;
         $weight_info->save();
 
-        return redirect('mypage');
+        return redirect('weight');
     }
 
     /**
@@ -201,7 +201,10 @@ class WeightController extends Controller
      */
     public function destroy($id)
     {
-       //
+        $weight = Weight::find($id);
+        $weight->delete();
+        
+        return redirect('weight');
     }
 
     //table's title(h3 contents) & table's header(th contents) & table's data(td contents)
