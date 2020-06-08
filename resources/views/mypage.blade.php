@@ -6,15 +6,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-            <!--スライド部分-->
-            @component('layouts.components.slide', [ 'slide1_path'   =>  '',
-                                                    'slide1_param'  =>  '',
-                                                    'slide2_path'   =>  '',
-                                                    'slide2_param'  =>  '',
-                                                    'slide3_path'   =>  '',
-                                                    'slide3_param'  =>  ''
-                                                    ])  
-            @endcomponent
+        @component($data_of_table_view['path'], ['weight_info'  =>  $data_of_table_view ])
+        @endcomponent
 
             <!--ログインボタン、登録ボタン-->
             <div class="row justify-content-md-center">
