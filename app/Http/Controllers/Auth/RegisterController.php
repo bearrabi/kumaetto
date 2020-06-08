@@ -32,7 +32,7 @@ class RegisterController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
     //ログイン後の以降先を変更
-    public function redirectPath(){ return '/mypage'; }
+    public function redirectPath(){ return '/weight'; }
 
     /**
      * Create a new controller instance.
