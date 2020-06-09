@@ -17,5 +17,12 @@
             </div>
         </div>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @component($data_of_calender_view['path'], ['calender_info'  =>  $data_of_calender_view ])
+            @endcomponent
+        </div>
+    </div>
 </div>
 @endsection
