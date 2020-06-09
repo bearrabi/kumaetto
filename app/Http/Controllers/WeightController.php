@@ -278,13 +278,13 @@ class WeightController extends Controller
    //sunday or saturday or weekday or holiday
    private function GetDayType($m_day, $m_holidays_arr, $m_today ){
         
+        if ( !$m_day->isCurrentMonth()        ){    return "other_month";   }
         if ( $m_day->isSameday( $m_today    ) ){    return 'today';         }
         if ( $m_day->isSunday()               ){    return "sunday";        }
         if ( $m_day->isSaturday()             ){    return "saturday";      }
-        if ( !$m_day->isCurrentMonth()        ){    return "other_month";   }
         
         foreach( $m_holidays_arr as $holiday ){
-            if ( $m_day->isSameday( $holiday ) ){   return "holiday";   }
+            if ( $m_day->isSameday( $holiday ) ){   return "holiday";       }
         }
 
         //not match all type
