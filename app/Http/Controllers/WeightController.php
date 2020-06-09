@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Weight;
+use \Yasumi\yasumi;
 use Carbon\CarbonImmutable;
 use Carbon\Carbon;
 
@@ -16,30 +17,48 @@ class WeightController extends Controller
      */
     public function index()
     {
+        $now = CarbonImmutable::now();
 
         //create array include table's title(h3 contents) & table's header(th contents) & table's data(td contents)
         $user_id    = auth()->user()->id;
-        $path       = 'weight.components.table';
-        $h3_value   = CarbonImmutable::now()->format('Y/m').'の体重';
+        $views_path = 'weight.components.table';
+        $h3_value   = $now->format('Y/m').'の体重';
         $tr_values  = ['Date','Weight','Operation'];
         $td_values  = $this->GetTableViewDatas(/*db datas of weights table at current month= */$this->GetCurrentMonthsWeight($user_id));
 
         //set data of table view
         $data_of_table_view = [ 
                 'user_id'           =>  $user_id,
-                'path'              =>  $path,
+                'path'              =>  $views_path,
                 'h3_value'          =>  $h3_value,
                 'tr_values'         =>  $tr_values,
                 'td_values'         =>  $td_values
         ];
+
         //dd($data_of_table_view);
+        $views_path =   'weight.components.calender';
+        $h2_value   =   $now->format('Y年 m月');
+        $tr_values  =   [   [ 'class' =>  'h_sunday'    ,   'name'  =>  '日' ], 
+                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '月' ],
+                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '火' ],
+                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '水' ],
+                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '木' ],
+                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '金' ],
+                            [ 'class' =>  'h_saturday'  ,   'name'  =>  '土' ]  ];
+        $td_values  =   $this->GetCurrentPageInfoOfCalender($now);
 
-        
+        //set data of calender view
+        $data_of_calender_view = [
+                'path'      =>  $views_path,
+                'h2_value'  =>  $h2_value,
+                'tr_values' =>  $tr_values,
+                'td_values' =>  $td_values
+        ];
 
 
 
 
-        return view('mypage',compact('data_of_table_view'));
+        return view( 'mypage', compact( 'data_of_table_view', 'data_of_calender_view' ) );
     }
 
     /**
@@ -211,6 +230,66 @@ class WeightController extends Controller
         $weight->delete();
         
         return redirect('weight');
+    }
+
+    private function GetCurrentPageInfoOfCalender($m_now){
+
+        //get Japanease holidays for coloring calender ... example: saturday's color is rgb(30,144,255) and holiday's color is pink etc 
+        $holidays   =   Yasumi::create('Japan', $m_now->year, 'ja_JP');
+
+        //set sunday to week start, and sudarday to week end
+        CarbonImmutable::setWeekStartsAt(CarbonImmutable::SUNDAY);
+        CarbonImmutable::setWeekEndsAt(CarbonImmutable::SATURDAY);
+
+        //get week start day and week end day
+        $first_day_of_first_week    =   $m_now->firstOfMonth()->startOfWeek();
+        $last_day_of_last_week      =   $m_now->lastOfMonth()->endOfWeek();
+
+        //set current page's info
+        $current_page_days =   [];
+        $day_of_calender    =   new Carbon( $first_day_of_first_week );
+        while( TRUE ){
+            
+            //'sunday' or 'saturday' or 'weekday' or 'holiday' of 'other_month' for set color of calender
+            $type   =   $this->GetDayType( $day_of_calender, $holidays, $m_now );
+
+            //array per week
+            $week_days[]    =   [ 'day'    =>   $day_of_calender->day, 'type'    =>  $type ];
+
+            //weeks_array
+            if ( $type  ==  'saturday' ){   
+                    $current_page_days[]    =   $week_days;  
+                    $week_days              =   [];
+            }
+
+            //last day of month ...break 
+            if ( $day_of_calender->isSameday( $last_day_of_last_week ) ){   
+                $current_page_days[]    =   $week_days;    
+                break;   
+            }
+
+            //search next day
+            $day_of_calender->addDay();
+        }
+
+        return $current_page_days;
+    }
+
+   //sunday or saturday or weekday or holiday
+   private function GetDayType($m_day, $m_holidays_arr, $m_today ){
+        
+        if ( $m_day->isSameday( $m_today    ) ){    return 'today';         }
+        if ( $m_day->isSunday()               ){    return "sunday";        }
+        if ( $m_day->isSaturday()             ){    return "saturday";      }
+        if ( !$m_day->isCurrentMonth()        ){    return "other_month";   }
+        
+        foreach( $m_holidays_arr as $holiday ){
+            if ( $m_day->isSameday( $holiday ) ){   return "holiday";   }
+        }
+
+        //not match all type
+        return "weekday";
+
     }
 
     //table's title(h3 contents) & table's header(th contents) & table's data(td contents)
