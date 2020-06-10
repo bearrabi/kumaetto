@@ -18,13 +18,14 @@ class WeightController extends Controller
     public function index()
     {
         $now = CarbonImmutable::now();
-
+        
         //create array include table's title(h3 contents) & table's header(th contents) & table's data(td contents)
         $user_id    = auth()->user()->id;
+        $data_of_current_month  =   $this->GetCurrentMonthsWeight( $user_id );
         $views_path = 'weight.components.table';
         $h3_value   = $now->format('Y/m').'の体重';
         $tr_values  = ['Date','Weight','Operation'];
-        $td_values  = $this->GetTableViewDatas(/*db datas of weights table at current month= */$this->GetCurrentMonthsWeight($user_id));
+        $td_values  = $this->GetTableViewDatas( $data_of_current_month );
 
         //set data of table view
         $data_of_table_view = [ 
@@ -37,7 +38,7 @@ class WeightController extends Controller
 
         //dd($data_of_table_view);
         $views_path =   'weight.components.calender';
-        $h2_value   =   $now->format('Y年 m月');
+        $h2_value   =   $now->format( 'Y年 m月' );
         $tr_values  =   [   [ 'class' =>  'h_sunday'    ,   'name'  =>  '日' ], 
                             [ 'class' =>  'h_weekday'   ,   'name'  =>  '月' ],
                             [ 'class' =>  'h_weekday'   ,   'name'  =>  '火' ],
@@ -45,7 +46,7 @@ class WeightController extends Controller
                             [ 'class' =>  'h_weekday'   ,   'name'  =>  '木' ],
                             [ 'class' =>  'h_weekday'   ,   'name'  =>  '金' ],
                             [ 'class' =>  'h_saturday'  ,   'name'  =>  '土' ]  ];
-        $td_values  =   $this->GetCurrentPageInfoOfCalender($now);
+        $td_values  =   $this->GetCurrentPageInfoOfCalender( $now );
 
         //set data of calender view
         $data_of_calender_view = [
@@ -55,10 +56,15 @@ class WeightController extends Controller
                 'td_values' =>  $td_values
         ];
 
-
-
-
-        return view( 'mypage', compact( 'data_of_table_view', 'data_of_calender_view' ) );
+        //create info of chart
+        
+        //add path of chart view
+        $datas_of_chart[ 'path' ]   =   'weight.components.chart';
+        $datas_of_chart[ 'title' ]  =   $now->format( 'Y年 m月' ).'の体重推移';   
+        $datas_of_chart[ 'header' ] =   [ '日付', '体重' ];
+        $datas_of_chart[ 'values' ] =   $this->CretateGraphDataOfViewAtTargetMonth( $data_of_current_month );
+        
+        return view( 'mypage', compact( 'data_of_table_view', 'data_of_calender_view', 'datas_of_chart' ) );
     }
 
     /**
@@ -278,13 +284,13 @@ class WeightController extends Controller
    //sunday or saturday or weekday or holiday
    private function GetDayType($m_day, $m_holidays_arr, $m_today ){
         
+        if ( !$m_day->isCurrentMonth()        ){    return "other_month";   }
         if ( $m_day->isSameday( $m_today    ) ){    return 'today';         }
         if ( $m_day->isSunday()               ){    return "sunday";        }
         if ( $m_day->isSaturday()             ){    return "saturday";      }
-        if ( !$m_day->isCurrentMonth()        ){    return "other_month";   }
         
         foreach( $m_holidays_arr as $holiday ){
-            if ( $m_day->isSameday( $holiday ) ){   return "holiday";   }
+            if ( $m_day->isSameday( $holiday ) ){   return "holiday";       }
         }
 
         //not match all type
@@ -310,7 +316,7 @@ class WeightController extends Controller
     }
 
     //create array for adjust table td format
-    private function GetTableViewDatas($m_db_weight_datas){
+    private function GetTableViewDatas( $m_db_weight_datas ){
 
         //convert from Eloquent to array
         foreach($m_db_weight_datas as $datas){
@@ -365,6 +371,30 @@ class WeightController extends Controller
         }
 
         return $row_datas;
+    }
+
+    //create view's graph data
+    private function CretateGraphDataOfViewAtTargetMonth( $m_datas_curr_month ){
+        
+        $send_to_view_json = array();
+
+        //set weight to array of chart view
+        foreach($m_datas_curr_month as $row){
+
+            //fetch measured_dt per day from db row
+            $day_label_name =   'month_day';
+            $day_value      =   date( 'n/j', strtotime( $row->measured_dt ) );
+            $data_per_day[ $day_label_name ]    =   $day_value;
+
+            //fetch weight per day from db row
+            $weight_label_name  =   'weight';
+            $weight_value       =   $row->weight;
+            $data_per_day[ $weight_label_name ]    =   $weight_value;
+
+            //set array the row's data to send_to_json  
+            $send_to_view_json[]    =   $data_per_day; 
+        }
+        return $send_to_view_json;
     }
 
     //initilize cells array of non tag
