@@ -2,6 +2,10 @@
 
 </div>
 
+<style>
+#chart{ width: 100%;  height: 50vh;  }
+</style>
+
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     // パッケージのロード
@@ -24,6 +28,8 @@
         let options = {
           title     : chart_title,
           seriesType: "Line",
+          chartArea:  { width: '80%', right: 20, left: 60, top: 80, bottom: 40, },
+          legend:     'top',
           series    : { 1:  { type: "line"}} 
         };
 
