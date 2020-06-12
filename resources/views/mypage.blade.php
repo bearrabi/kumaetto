@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-        @component($data_of_table_view['path'], ['weight_info'  =>  $data_of_table_view ])
+        @component( $data_of_table_view[ 'path' ], [ 'weight_info'  =>  $data_of_table_view ] )
         @endcomponent
 
             <!--ログインボタン、登録ボタン-->
