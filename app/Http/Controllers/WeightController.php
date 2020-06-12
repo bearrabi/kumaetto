@@ -17,46 +17,39 @@ class WeightController extends Controller
      */
     public function index()
     {
+        //get data from weights table beatween firstday and lastday of month
         $now = CarbonImmutable::now();
+        $firstday   =   $firstday = $now->firstOfMonth();
+        $lastday    =   $now->LastOfMonth();
+        $weights    =   Weight::where('user_id', auth()->user()->id)
+                                ->whereBetween('measured_dt',[$firstday, $lastday])
+                                ->orderby('measured_dt');
         
         //create array include table's title(h3 contents) & table's header(th contents) & table's data(td contents)
-        $user_id    = auth()->user()->id;
-        $data_of_current_month  =   $this->GetCurrentMonthsWeight( $user_id );
-        $views_path = 'weight.components.table';
-        $h3_value   = $now->format('Y/m').'の体重';
-        $tr_values  = ['Date','Weight','Operation'];
-        $td_values  = $this->GetTableViewDatas( $data_of_current_month );
-
-        //set data of table view
         $data_of_table_view = [ 
-                'user_id'           =>  $user_id,
-                'path'              =>  $views_path,
-                'h3_value'          =>  $h3_value,
-                'tr_values'         =>  $tr_values,
-                'td_values'         =>  $td_values
+            'user_id'           =>  auth()->user()->id,
+            'path'              =>  'weight.components.table',
+            'h3_value'          =>  $now->format('Y/m').'の体重',
+            'tr_values'         =>  ['Date','Weight','Operation'],
+            'td_values'         =>  $weights->paginate(10)
         ];
-
-        //dd($data_of_table_view);
-        $views_path =   'weight.components.calender';
-        $h2_value   =   $now->format( 'Y年 m月' );
-        $tr_values  =   [   [ 'class' =>  'h_sunday'    ,   'name'  =>  '日' ], 
-                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '月' ],
-                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '火' ],
-                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '水' ],
-                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '木' ],
-                            [ 'class' =>  'h_weekday'   ,   'name'  =>  '金' ],
-                            [ 'class' =>  'h_saturday'  ,   'name'  =>  '土' ]  ];
-        $td_values  =   $this->GetCurrentPageInfoOfCalender( $now );
-
+        
         //set data of calender view
         $data_of_calender_view = [
-                'path'      =>  $views_path,
-                'h2_value'  =>  $h2_value,
-                'tr_values' =>  $tr_values,
-                'td_values' =>  $td_values
+            'path'      =>  'weight.components.calender',
+            'h2_value'  =>  $now->format( 'Y年 m月' ),
+            'tr_values' =>  [   [ 'class' =>  'h_sunday'    ,   'name'  =>  '日' ], 
+                                [ 'class' =>  'h_weekday'   ,   'name'  =>  '月' ],
+                                [ 'class' =>  'h_weekday'   ,   'name'  =>  '火' ],
+                                [ 'class' =>  'h_weekday'   ,   'name'  =>  '水' ],
+                                [ 'class' =>  'h_weekday'   ,   'name'  =>  '木' ],
+                                [ 'class' =>  'h_weekday'   ,   'name'  =>  '金' ],
+                                [ 'class' =>  'h_saturday'  ,   'name'  =>  '土' ]  ],
+            'td_values' =>  $this->GetCurrentPageInfoOfCalender( $now )
         ];
-
+        //dd($data_of_calender_view['td_values']);
         //create info of chart
+        $data_of_current_month  =   $this->GetCurrentMonthsWeight( auth()->user()->id );
         
         //add path of chart view
         $datas_of_chart[ 'path' ]   =   'weight.components.chart';
@@ -254,28 +247,29 @@ class WeightController extends Controller
         //set current page's info
         $current_page_days =   [];
         $day_of_calender    =   new Carbon( $first_day_of_first_week );
+
+        $day_index = 0;
         while( TRUE ){
-            
-            //'sunday' or 'saturday' or 'weekday' or 'holiday' of 'other_month' for set color of calender
+
+            //'sunday' or 'saturday' or 'weekday' or 'holiday' of 'other_month' for set date color of calender
             $type   =   $this->GetDayType( $day_of_calender, $holidays, $m_now );
 
             //array per week
             $week_days[]    =   [ 'day'    =>   $day_of_calender->day, 'type'    =>  $type ];
 
-            //weeks_array
-            if ( $type  ==  'saturday' ){   
+            //set weeks_array by saturday
+            if ( $day_index  ==  6 ){   
                     $current_page_days[]    =   $week_days;  
                     $week_days              =   [];
+                    $day_index              =   -1;
             }
 
-            //last day of month ...break 
-            if ( $day_of_calender->isSameday( $last_day_of_last_week ) ){   
-                $current_page_days[]    =   $week_days;    
-                break;   
-            }
+            //break while by last of current calender page
+            if ( $day_of_calender->isSameday( $last_day_of_last_week ) ){   break;  }
 
             //search next day
             $day_of_calender->addDay();
+            $day_index++;
         }
 
         return $current_page_days;
@@ -315,64 +309,6 @@ class WeightController extends Controller
         return $weights;
     }
 
-    //create array for adjust table td format
-    private function GetTableViewDatas( $m_db_weight_datas ){
-
-        //convert from Eloquent to array
-        foreach($m_db_weight_datas as $datas){
-            $arr_weight_db_datas[] = [  $datas->id, 
-                                        $datas->measured_dt, 
-                                        $datas->weight      ];
-        }
-
-        //create table row's data
-        $row_datas = [];
-        foreach($arr_weight_db_datas as $i => $row){
-
-            //get id for setting delete action's parameter
-            $columns_index = 0;
-            $id = $row[$columns_index];
-
-            //set measured_dt's cell
-            $columns_index++; 
-            $measured_dt_cell           =   $this->InitializeNonTagCellsInfo();
-            $measured_dt_cell['value']  =   $row[$columns_index];
-            $label_name                 =   'col'.( $columns_index - 1 );
-            $cells_data[$label_name]    =   $measured_dt_cell;
-
-            //set weight's cell
-            $columns_index++;
-            $weight_cell                =   $this->InitializeNonTagCellsInfo();
-            $weight_cell['value']       =   $row[$columns_index];
-            $weight_cell['unit']        =   'Kg';
-            $label_name                 =   'col'.( $columns_index - 1 );
-            $cells_data[$label_name]    =   $weight_cell;
-
-            //set action's cell
-            $columns_index++;
-            $action_cell['edit']            =   $this->InitializeAnchorButtonCellsInfo();
-            $action_cell['edit']['action']  =   'WeightController@edit';
-            $action_cell['edit']['param']   =   $id;
-            $action_cell['edit']['value']   =   '編集';
-
-            $action_cell['delete']          =   $this->InitializeSubmitButtonCellsInfo();
-            $action_cell['delete']['action']=   'WeightController@destroy';
-            $action_cell['delete']['param'] =   $id;
-            $action_cell['delete']['value'] =   '削除';
-
-            $label_name                 =   'col'.( $columns_index - 1 );
-            $cells_data[$label_name]    =   $action_cell;
-            
-            //set all column's data to array
-            $label_row_index                    =   'row'.$i;
-            $row_datas[$label_row_index]      =   $cells_data;
-
-            $cells_data = [];
-        }
-
-        return $row_datas;
-    }
-
     //create view's graph data
     private function CretateGraphDataOfViewAtTargetMonth( $m_datas_curr_month ){
         
@@ -382,14 +318,10 @@ class WeightController extends Controller
         foreach($m_datas_curr_month as $row){
 
             //fetch measured_dt per day from db row
-            $day_label_name =   'month_day';
-            $day_value      =   date( 'n/j', strtotime( $row->measured_dt ) );
-            $data_per_day[ $day_label_name ]    =   $day_value;
+            $data_per_day[ 'month_day' ]    =   date( 'n/j', strtotime( $row->measured_dt ) );;
 
             //fetch weight per day from db row
-            $weight_label_name  =   'weight';
-            $weight_value       =   $row->weight;
-            $data_per_day[ $weight_label_name ]    =   $weight_value;
+            $data_per_day[ 'weight' ]    =   $row->weight;
 
             //set array the row's data to send_to_json  
             $send_to_view_json[]    =   $data_per_day; 
@@ -397,34 +329,4 @@ class WeightController extends Controller
         return $send_to_view_json;
     }
 
-    //initilize cells array of non tag
-    private function InitializeNonTagCellsInfo(){
-
-        return [    'tag'   =>  '',
-                    'class' =>  '',
-                    'value' =>  '',     
-                    'unit'  =>  ''];
-    }
-
-    //initialize cells array of anchor tag
-    private function InitializeAnchorButtonCellsInfo(){
-        
-        return [    'tag'       =>  'a', 
-                    'class'     =>  'btn btn-primary',
-                    'action'    =>  '',
-                    'param'     =>  '',
-                    'value'     =>  ''                      ];
-    }
-
-    //initialize cells array of anchor tag
-    private function InitializeSubmitButtonCellsInfo(){
-        
-        return [    'tag'       =>  'input',
-                    'type'      =>  'submit',
-                    'class'     =>  'btn btn-danger', 
-                    'action'    =>  '',
-                    'param'     =>  '',
-                    'onClick'   =>  'delete_alert(event); return false;',
-                    'value'     =>  '削除'                                       ];
-    }
 }
